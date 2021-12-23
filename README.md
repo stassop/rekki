@@ -1,4 +1,4 @@
-# rekki
+# Rekki
 
 ## Search screen
 
