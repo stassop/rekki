@@ -1,5 +1,5 @@
 import React, { FunctionComponent, useCallback } from 'react';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import {
   ActivityIndicator,
   Alert,
@@ -11,6 +11,7 @@ import {
   View,
 } from 'react-native';
 import { State } from '../reducers';
+import { searchAsync } from '../actions';
 
 export interface Result {
   name: string,
@@ -26,7 +27,6 @@ const Link: FunctionComponent<{
 }> = ({ url, text }) => {
   const onPress = useCallback(async () => {
     const isUrlSupported = await Linking.canOpenURL(url);
-
     if (isUrlSupported) {
       await Linking.openURL(url);
     } else {
@@ -53,12 +53,16 @@ const Item: FunctionComponent<Result> = ({ name, type, url, published_at }: Resu
 );
 
 const Results: FunctionComponent = () => {
+  const dispatch = useDispatch();
   const text: string = useSelector((state: State) => state.text);
-  const isSearching: boolean = useSelector((state: State) => state.isSearching);
   const results: Array<Result> = useSelector((state: State) => state.results);
+  const total: number = useSelector((state: State) => state.total);
+  const isSearching: boolean = useSelector((state: State) => state.isSearching);
+
+  const isEmpty = text.length > 0 && results.length === 0;
 
   const renderItem = ({ item }: { item: Result }) => (
-    <Item {...item} />
+    <Item { ...item } />
   );
 
   const getItemLayout = (item: any, index: number) => ({
@@ -67,25 +71,32 @@ const Results: FunctionComponent = () => {
     index,
   });
 
-  if (isSearching) {
-    return (<ActivityIndicator />);
-  } else if (text.length > 0 && results.length === 0) {
-    return (
-      <Text style={styles.empty}>
-        No results for '{text}'
-      </Text>
-    );
-  } else {
-    return (
-      <FlatList
-        data={results}
-        renderItem={renderItem}
-        keyExtractor={item => item.identifier}
-        getItemLayout={getItemLayout}
-        style={styles.list}
-      />
-    );
+  const onEndReached = (): void => {
+    if (results.length < total) {
+      dispatch(searchAsync(text, results.length));
+    }
   }
+
+  return (
+    <>
+      { isEmpty && !isSearching &&
+        <Text style={styles.empty}>
+          No results for '{text}'
+        </Text>
+      }
+      { !isEmpty &&
+        <FlatList
+          data={results}
+          renderItem={renderItem}
+          keyExtractor={item => item.identifier}
+          getItemLayout={getItemLayout}
+          onEndReached={onEndReached}
+          style={styles.list}
+        />
+      }
+      { isSearching && <ActivityIndicator /> }
+    </>
+  );
 };
 
 const styles = StyleSheet.create({

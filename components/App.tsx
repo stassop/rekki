@@ -1,20 +1,21 @@
-import React from 'react';
+import React, { FunctionComponent } from 'react';
 import {
   SafeAreaView,
   StyleSheet,
   StatusBar,
   useColorScheme,
 } from 'react-native';
+import thunk from 'redux-thunk';
 import { Provider } from 'react-redux';
-import { createStore } from 'redux';
+import { createStore, applyMiddleware } from 'redux';
 import Search from './Search';
 import Results from './Results';
 import { rootReducer } from '../reducers';
 
-const store = createStore(rootReducer);
+const store = createStore(rootReducer, applyMiddleware(thunk));
 
-const App = () => {
-  const isDarkMode = useColorScheme() === 'dark';
+const App: FunctionComponent = () => {
+  const isDarkMode: boolean = useColorScheme() === 'dark';
   return (
     <Provider store={store}>
       <StatusBar barStyle={isDarkMode ? 'light-content' : 'dark-content'} />

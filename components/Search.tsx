@@ -1,34 +1,21 @@
-import React, { useState } from 'react';
+import React, { FunctionComponent, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import {
-  Alert,
   StyleSheet,
   Text,
   TextInput,
   TouchableOpacity,
   View,
 } from 'react-native';
-import {
-  search as searchAction,
-  searchSuccess,
-  searchError,
-} from '../actions';
+import { searchAsync } from '../actions';
 
-const Search = () => {
+const Search: FunctionComponent = () => {
   const [ text, setText ] = useState<string>('');
   const dispatch = useDispatch();
 
-  const search = async () => {
-    try {
-      dispatch(searchAction(text));
-      const response = await fetch('https://demo.dataverse.org/api/search?q=' + text);
-      const json = await response.json();
-      dispatch(searchSuccess(json.data.items));
-    } catch (error: any) {
-      dispatch(searchError());
-      Alert.alert('Oops!', error?.message || 'Something went wrong');
-    }
-  }
+  const search = (): void => {
+    dispatch(searchAsync(text));
+  };
 
   return (
     <View style={styles.container}>
