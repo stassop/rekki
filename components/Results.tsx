@@ -1,4 +1,4 @@
-import React, { FunctionComponent, useCallback } from 'react';
+import React, { useCallback } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import {
   ActivityIndicator,
@@ -11,7 +11,7 @@ import {
   View,
 } from 'react-native';
 import { State } from '../reducers';
-import { searchAsync } from '../actions';
+import { asyncSearch } from '../actions';
 
 export interface Result {
   name: string,
@@ -21,10 +21,12 @@ export interface Result {
   published_at: string,
 }
 
-const Link: FunctionComponent<{
+interface LinkProps {
   url: string,
   text: string,
-}> = ({ url, text }) => {
+}
+
+const Link: React.FC<LinkProps> = ({ url, text }: LinkProps) => {
   const onPress = useCallback(async () => {
     const isUrlSupported = await Linking.canOpenURL(url);
     if (isUrlSupported) {
@@ -43,7 +45,7 @@ const Link: FunctionComponent<{
   );
 };
 
-const Item: FunctionComponent<Result> = ({ name, type, url, published_at }: Result) => (
+const Item: React.FC<Result> = ({ name, type, url, published_at }: Result) => (
   <View style={styles.item}>
     <Text numberOfLines={1} style={styles.name}>{name}</Text>
     <Text>Type: {type}</Text>
@@ -52,7 +54,7 @@ const Item: FunctionComponent<Result> = ({ name, type, url, published_at }: Resu
   </View>
 );
 
-const Results: FunctionComponent = () => {
+const Results: React.FC = () => {
   const dispatch = useDispatch();
   const text: string = useSelector((state: State) => state.text);
   const results: Array<Result> = useSelector((state: State) => state.results);
@@ -61,7 +63,7 @@ const Results: FunctionComponent = () => {
 
   const isEmpty = text.length > 0 && results.length === 0;
 
-  const renderItem = ({ item }: { item: Result }) => (
+  const renderItem = ({ item }: {item: Result}) => (
     <Item { ...item } />
   );
 
@@ -73,9 +75,9 @@ const Results: FunctionComponent = () => {
 
   const onEndReached = (): void => {
     if (results.length < total) {
-      dispatch(searchAsync(text, results.length));
+      dispatch(asyncSearch(text, results.length));
     }
-  }
+  };
 
   return (
     <>

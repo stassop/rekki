@@ -1,5 +1,5 @@
-import { Reducer, AnyAction } from 'redux';
-import { Actions } from '../actions';
+import { Reducer } from 'redux';
+import { Actions, ActionType } from '../actions';
 import { Result } from '../components/Results';
 
 export interface State {
@@ -16,9 +16,9 @@ const initialState: State = {
   total: 0,
 };
 
-export const rootReducer: Reducer<State, AnyAction> = (
+export const rootReducer: Reducer<State, ActionType> = (
   state: State = initialState,
-  action: AnyAction,
+  action: ActionType,
 ): State => {
   switch (action.type) {
     case Actions.SEARCH:

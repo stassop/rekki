@@ -1,4 +1,4 @@
-import React, { FunctionComponent, useState } from 'react';
+import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import {
   StyleSheet,
@@ -7,14 +7,14 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import { searchAsync } from '../actions';
+import { asyncSearch } from '../actions';
 
-const Search: FunctionComponent = () => {
-  const [ text, setText ] = useState<string>('');
+const Search: React.FC = () => {
   const dispatch = useDispatch();
+  const [ text, setText ] = useState('');
 
   const search = (): void => {
-    dispatch(searchAsync(text));
+    dispatch(asyncSearch(text));
   };
 
   return (
@@ -23,6 +23,7 @@ const Search: FunctionComponent = () => {
         value={text}
         autoFocus={true}
         onChangeText={setText}
+        placeholder={'Search Dataverse'}
         style={styles.input}
       />
       <TouchableOpacity style={styles.button} onPress={search}>

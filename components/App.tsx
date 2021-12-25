@@ -1,4 +1,4 @@
-import React, { FunctionComponent } from 'react';
+import React from 'react';
 import {
   SafeAreaView,
   StyleSheet,
@@ -14,7 +14,7 @@ import { rootReducer } from '../reducers';
 
 const store = createStore(rootReducer, applyMiddleware(thunk));
 
-const App: FunctionComponent = () => {
+const App: React.FC = () => {
   const isDarkMode: boolean = useColorScheme() === 'dark';
   return (
     <Provider store={store}>
