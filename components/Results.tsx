@@ -5,6 +5,7 @@ import {
   Alert,
   FlatList,
   Linking,
+  ListRenderItem,
   StyleSheet,
   Text,
   TouchableOpacity,
@@ -63,7 +64,7 @@ const Results: React.FC = () => {
 
   const isEmpty = text.length > 0 && results.length === 0;
 
-  const renderItem = ({ item }: {item: Result}) => (
+  const renderItem: ListRenderItem<Result> = ({ item }: {item: Result}) => (
     <Item { ...item } />
   );
 
