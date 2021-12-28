@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useDispatch } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import {
   StyleSheet,
   Text,
@@ -7,14 +7,21 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
+import { State } from '../reducers';
 import { asyncSearch } from '../actions';
 
 const Search: React.FC = () => {
   const dispatch = useDispatch();
   const [ text, setText ] = useState('');
+  const prevText: string = useSelector((state: State) => state.text);
+
+  const sanitize = (dirty: string) => dirty.trim().replace(/\s{2,}/g, ' ');
 
   const search = (): void => {
-    dispatch(asyncSearch(text));
+    const cleanText = sanitize(text);
+    if (cleanText !== prevText) {
+      dispatch(asyncSearch(cleanText));
+    }
   };
 
   return (
