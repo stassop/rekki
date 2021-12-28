@@ -15,10 +15,10 @@ const Search: React.FC = () => {
   const [ text, setText ] = useState('');
   const prevText: string = useSelector((state: State) => state.text);
 
-  const sanitize = (dirty: string) => dirty.trim().replace(/\s{2,}/g, ' ');
+  const sanitize = (dirty: string): string => dirty.trim().replace(/\s{2,}/g, ' ');
 
   const search = (): void => {
-    const cleanText = sanitize(text);
+    const cleanText: string = sanitize(text);
     if (cleanText !== prevText) {
       dispatch(asyncSearch(cleanText));
     }
